@@ -7,10 +7,10 @@ import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class EletivaGeotecApiGatewayApplication {
+public class EletivaGeotecApiGateway {
 
 	public static void main(String[] args) {
-		SpringApplication.run(EletivaGeotecApiGatewayApplication.class, args);
+		SpringApplication.run(EletivaGeotecApiGateway.class, args);
 	}
 
 	@Bean

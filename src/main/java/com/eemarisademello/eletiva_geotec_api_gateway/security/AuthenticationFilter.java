@@ -20,25 +20,33 @@ public class AuthenticationFilter implements GlobalFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         var request = exchange.getRequest();
+        var path = request.getPath();
+
+        System.out.println("Intercepted request: " + path);
 
         // Permitir requisições públicas (exemplo)
         if (request.getPath().toString().contains("/auth")) {
+            System.out.println("Public route; skipping token validation.");
             return chain.filter(exchange);
         }
 
         var authHeader = request.getHeaders().getFirst("Authorization");
+        System.out.println("Authorization header: " + authHeader);
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            System.out.println("Authorization header missing or invalid");
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token ausente ou inválido");
         }
 
         var token = authHeader.substring(7);
 
         try {
-            String username = jwtUtil.extractUsername(token);
-            if (!jwtUtil.isTokenValid(token, username)) {
+            if (!jwtUtil.isTokenValid(token)) {
+                System.out.println("Invalid or expired token: " + token);
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token inválido ou expirado");
             }
+
+            System.out.println("Valid token. Access granted. Token: " + token);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Erro na validação do token: " + e.getMessage());
         }
